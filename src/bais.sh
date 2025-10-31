@@ -11,7 +11,7 @@ trap cleanup EXIT
 [[ -z "${DISK:-}" ]] && die "DISK variable not set!"
 [[ ${#BASIC_PACKAGES[@]} -eq 0 ]] && die "BASIC_PACKAGES is empty!"
 
-mountpoint -q "$DISK" && die "$DISK is currently mounted! Unmount to continue."
+mount | grep -q "$DISK" && die "$DISK is currently mounted! Unmount to continue."
 
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
