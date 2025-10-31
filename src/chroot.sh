@@ -56,8 +56,14 @@ timeout $BOOTLOADER_TIMEOUT
 editor no
 LOADER
 
-for s in "${SYSTEMD_SERVICES[@]}"; do
-    systemctl enable $s
+for s in "${SYSTEMD_SYSTEM_SERVICES[@]}"; do
+    say_green "Enabling system service: $s"
+    systemctl enable --now "$s"
+done
+
+for s in "${SYSTEMD_USER_SERVICES[@]}"; do
+    say_green "Enabling user service: $s"
+    systemctl --user enable --now "$s"
 done
 
 say_green "System configuration complete!"

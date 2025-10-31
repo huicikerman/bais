@@ -15,15 +15,18 @@ TIMEZONE="Europe/Madrid"
 BOOTLOADER_NAME="Arch Linux"
 BOOTLOADER_TIMEOUT=10
 
-SYSTEMD_SERVICES=(
+SYSTEMD_SYSTEM_SERVICES=(
     iwd.service
     sshd.service
-    pipewire.service
-    wireplumber.service
     systemd-timesyncd.service
     systemd-boot-update.service
     reflector.service
     reflector.timer
+)
+
+SYSTEMD_USER_SERVICES=(
+    pipewire.service
+    wireplumber.service
 )
 
 BASIC_PACKAGES=(
