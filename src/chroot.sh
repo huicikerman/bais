@@ -61,4 +61,18 @@ editor no
 LOADER
 
 say "System configuration complete!"
-say "You can now exit chroot and reboot into your new system."
+
+ask_normal CONFIRM "Would you like to reboot now? (y/N)"
+
+if [[ "$CONFIRM" != [yY] ]]; then
+    say "You can now exit chroot and reboot into your new system whenever you want."
+else
+    say "Rebooting in..."
+
+    for i in $(seq 3 -1 1); do
+        say "$i..."
+        sleep 1
+    done
+
+    shutdown -r now
+fi
