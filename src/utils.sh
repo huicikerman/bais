@@ -17,7 +17,7 @@ ask_secret () {
 }
 
 die () {
-    say_red $1
+    say_red "$1"
     exit 1
 }
 
