@@ -57,7 +57,7 @@ editor no
 LOADER
 
 for s in "${SYSTEMD_SERVICES[@]}"; do
-    systemctl enable s
+    systemctl enable $s
 done
 
 say_green "System configuration complete!"
