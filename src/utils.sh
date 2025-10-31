@@ -20,6 +20,9 @@ die () {
 cleanup () {
     say "Cleaning up before exiting..."
 
+    # Remove script's temp files.
+    rm -rf /mnt/bais/
+
     swapoff -a || true
     umount -R /mnt || true
 }

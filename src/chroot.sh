@@ -21,10 +21,8 @@ cat << HOSTS > /etc/hosts
 127.0.1.1 $HOSTNAME.localdomain $HOSTNAME
 HOSTS
 
-ROOT_PASSWORD=$(< /root/.rootpw)
-USER_PASSWORD=$(< /root/.userpw)
-
-rm -f /root/.rootpw /root/.userpw
+ROOT_PASSWORD=$(< /bais/.rootpw)
+USER_PASSWORD=$(< /bais/.userpw)
 
 echo "root:$ROOT_PASSWORD" | chpasswd
 
@@ -37,7 +35,7 @@ systemctl enable iwd
 systemctl enable sshd
 systemctl enable systemd-timesyncd
 
-bootctl --esp-path=/boot/efi install
+bootctl install
 
 ROOT_PARTUUID=$(blkid --match-tag PARTUUID --output value ${DISK}3)
 UCODE_IMAGE=""
@@ -48,7 +46,7 @@ elif pacman -Q amd-ucode &>/dev/null; then
     UCODE_IMAGE="/amd-ucode.img"
 fi
 
-cat << BOOT > /boot/efi/loader/entries/arch.conf
+cat << BOOT > /boot/loader/entries/arch.conf
 title $BOOTLOADER_NAME
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
@@ -56,7 +54,7 @@ initrd $UCODE_IMAGE
 options root=PARTUUID=$ROOT_PARTUUID rw quiet splash
 BOOT
 
-cat << LOADER > /boot/efi/loader/loader.conf
+cat << LOADER > /boot/loader/loader.conf
 default arch.conf
 timeout $BOOTLOADER_TIMEOUT
 editor no

@@ -12,6 +12,9 @@ KEYMAP="us"
 LOCALE="en_US.UTF-8"
 TIMEZONE="Europe/Madrid"
 
+BOOTLOADER_NAME="Arch Linux"
+BOOTLOADER_TIMEOUT=5
+
 BASIC_PACKAGES=(
     # Basic
     base
@@ -47,6 +50,3 @@ BASIC_PACKAGES=(
     man-pages
     man-pages-es
 )
-
-BOOTLOADER_NAME="Arch Linux"
-BOOTLOADER_TIMEOUT=5

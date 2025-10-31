@@ -11,10 +11,12 @@ trap cleanup EXIT
 [[ -z "${DISK:-}" ]] && die "DISK variable not set!"
 [[ ${#BASIC_PACKAGES[@]} -eq 0 ]] && die "BASIC_PACKAGES is empty!"
 
+mountpoint -q "$DISK" && die "$DISK is currently mounted! Unmount to continue."
+
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
 
-ask_normal CONFIRM "The disk $DISK will be cleared before partitioning. This cannot be undone. Confirm? (y/N): "
+ask_normal CONFIRM "The disk $DISK will be cleared before partitioning. This can NOT be undone. Confirm? (y/N): "
 
 if [[ "$CONFIRM" != [yY] ]]; then
     die "Script aborted by the user."
@@ -63,7 +65,7 @@ mkfs.ext4 -L ROOT "${DISK}3"
 
 say "Mounting partitions..."
 mount "${DISK}3" /mnt
-mount --mkdir "${DISK}1" /mnt/boot/efi
+mount --mkdir "${DISK}1" /mnt/boot
 swapon "${DISK}2"
 
 say "Installing basic packages..."
@@ -94,19 +96,19 @@ done
 echo "$ROOT_PASSWORD" > "$ROOT_PASS_FILE"
 echo "$USER_PASSWORD" > "$USER_PASS_FILE"
 
-cp "$(dirname "$0")/chroot.sh" /mnt/root/
-cp "$(dirname "$0")/config.sh" /mnt/root/
-cp "$(dirname "$0")/utils.sh" /mnt/root/
+cp "$(dirname "$0")/chroot.sh" /mnt/bais/
+cp "$(dirname "$0")/config.sh" /mnt/bais/
+cp "$(dirname "$0")/utils.sh" /mnt/bais/
 
-cp "$ROOT_PASS_FILE" /mnt/root/.rootpw
-cp "$USER_PASS_FILE" /mnt/root/.userpw
+cp "$ROOT_PASS_FILE" /mnt/bais/.rootpw
+cp "$USER_PASS_FILE" /mnt/bais/.userpw
 
 say "Base setup complete!"
 
 ask_normal CONFIRM "Do you want to chroot and finalize installation now? (y/N): "
 
 if [[ "$CONFIRM" == [yY] ]]; then
-    arch-chroot /mnt /root/chroot.sh
+    arch-chroot /mnt /bais/chroot.sh
 else
-    say "You can later chroot manually with: arch-chroot /mnt /root/chroot.sh"
+    say "You can later chroot manually with: arch-chroot /mnt /bais/chroot.sh"
 fi
