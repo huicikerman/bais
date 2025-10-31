@@ -58,12 +58,12 @@ LOADER
 
 for s in "${SYSTEMD_SYSTEM_SERVICES[@]}"; do
     say_green "Enabling system service: $s"
-    systemctl enable --now "$s"
+    systemctl enable "$s"
 done
 
 for s in "${SYSTEMD_USER_SERVICES[@]}"; do
     say_green "Enabling user service: $s"
-    systemctl --user enable --now "$s"
+    systemctl --user enable "$s"
 done
 
 say_green "System configuration complete!"
