@@ -13,20 +13,30 @@ LOCALE="en_US.UTF-8"
 TIMEZONE="Europe/Madrid"
 
 BOOTLOADER_NAME="Arch Linux"
-BOOTLOADER_TIMEOUT=5
+BOOTLOADER_TIMEOUT=10
+
+SYSTEMD_SERVICES=(
+    iwd.service
+    sshd.service
+    pipewire.service
+    wireplumber.service
+    systemd-timesyncd.service
+    systemd-boot-update.service
+    reflector.service
+    reflector.timer
+)
 
 BASIC_PACKAGES=(
-    # Basic
+    # Basics:
     base
     base-devel
     linux
     linux-firmware
     linux-firmware-intel
-    sof-firmware
     intel-ucode
     iwd
 
-    # Audio
+    # Audio:
     pipewire
     pipewire-alsa
     pipewire-audio
@@ -34,19 +44,19 @@ BASIC_PACKAGES=(
     pipewire-jack
     wireplumber
 
-    # X.Org
+    # X11:
     xorg-xinit
     xorg-server
     xorg-apps
 
-    # Misc
+    # Misc:
     git
     micro
     openssh
     reflector
     sudo
-    xdg-user-dirs
     man-db
     man-pages
     man-pages-es
+    xdg-user-dirs
 )

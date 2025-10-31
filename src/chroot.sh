@@ -31,10 +31,6 @@ echo "$USERNAME:$USER_PASSWORD" | chpasswd
 
 sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
-systemctl enable iwd
-systemctl enable sshd
-systemctl enable systemd-timesyncd
-
 bootctl install
 
 ROOT_PARTUUID=$(blkid --match-tag PARTUUID --output value ${DISK}3)
@@ -59,6 +55,10 @@ default arch.conf
 timeout $BOOTLOADER_TIMEOUT
 editor no
 LOADER
+
+for s in "${SYSTEMD_SERVICES[@]}"; do
+    systemctl enable s
+done
 
 say "System configuration complete!"
 
