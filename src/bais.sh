@@ -7,23 +7,24 @@ set -euo pipefail
 
 trap cleanup EXIT
 
-[ ! -d /sys/firmware/efi ] && die "Reboot your system in UEFI mode to continue."
+[[ ! -d /sys/firmware/efi ]] && die "Reboot your system in UEFI mode to continue."
 [[ -z "${DISK:-}" ]] && die "DISK variable not set!"
 [[ ${#BASIC_PACKAGES[@]} -eq 0 ]] && die "BASIC_PACKAGES is empty!"
 
-mount | grep -q "$DISK" && die "$DISK is currently mounted! Unmount to continue."
+mount | grep -q "$DISK" && die "'$DISK' is currently mounted! Unmount to continue."
 
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
 
-ask_normal CONFIRM "The disk $DISK will be cleared before partitioning. This can NOT be undone. Confirm? (y/N): "
+ask_normal CONFIRM "The disk '$DISK' will be cleared before partitioning. \
+This can NOT be undone. Are you sure you want to continue? (y/N):"
 
 if [[ "$CONFIRM" != [yY] ]]; then
     die "Script aborted by the user."
 else
     say "Clearing the disk in..."
 
-    for i in $(seq 5 -1 0); do
+    for i in $(seq 5 -1 1); do
         say "$i..."
         sleep 1
     done
@@ -80,15 +81,15 @@ ROOT_PASS_FILE=$(mktemp)
 USER_PASS_FILE=$(mktemp)
 
 while true; do
-    ask_secret ROOT_PASSWORD "Enter root password: "
-    ask_secret ROOT_CONFIRM "Confirm root password: "
+    ask_secret ROOT_PASSWORD "Enter root password:"
+    ask_secret ROOT_CONFIRM "Confirm root password:"
 
     [[ "$ROOT_PASSWORD" != "$ROOT_CONFIRM" ]] && say "Passwords do not match. Try again." || break
 done
 
 while true; do
-    ask_secret USER_PASSWORD "Enter password for user '$USERNAME': "
-    ask_secret USER_CONFIRM "Confirm password for user '$USERNAME': "
+    ask_secret USER_PASSWORD "Enter password for user '$USERNAME':"
+    ask_secret USER_CONFIRM "Confirm password for user '$USERNAME':"
 
     [[ "$USER_PASSWORD" != "$USER_CONFIRM" ]] && say "Passwords do not match. Try again." || break
 done
@@ -105,7 +106,7 @@ cp "$USER_PASS_FILE" /mnt/bais/.userpw
 
 say "Base setup complete!"
 
-ask_normal CONFIRM "Do you want to chroot and finalize installation now? (y/N): "
+ask_normal CONFIRM "Would you like to chroot and finalize installation now? (y/N):"
 
 if [[ "$CONFIRM" == [yY] ]]; then
     arch-chroot /mnt /bais/chroot.sh
