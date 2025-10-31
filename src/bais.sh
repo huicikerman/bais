@@ -14,7 +14,7 @@ trap cleanup EXIT
 loadkeys "$KEYMAP"
 timedatectl set-ntp true
 
-ask_normal "The disk $DISK will be cleared before partitioning. This cannot be undone. Confirm? (y/N): " CONFIRM
+ask_normal CONFIRM "The disk $DISK will be cleared before partitioning. This cannot be undone. Confirm? (y/N): "
 
 if [[ "$CONFIRM" != [yY] ]]; then
     die "Script aborted by the user."
@@ -73,15 +73,15 @@ ROOT_PASS_FILE=$(mktemp)
 USER_PASS_FILE=$(mktemp)
 
 while true; do
-    ask_secret "Enter root password: " ROOT_PASSWORD
-    ask_secret "Confirm root password: " ROOT_CONFIRM
+    ask_secret ROOT_PASSWORD "Enter root password: "
+    ask_secret ROOT_CONFIRM "Confirm root password: "
 
     [[ "$ROOT_PASSWORD" != "$ROOT_CONFIRM" ]] && say "Passwords do not match. Try again." || break
 done
 
 while true; do
-    ask_secret "Enter password for user '$USERNAME': " USER_PASSWORD
-    ask_secret "Confirm password for user '$USERNAME': " USER_CONFIRM
+    ask_secret USER_PASSWORD "Enter password for user '$USERNAME': "
+    ask_secret USER_CONFIRM "Confirm password for user '$USERNAME': "
 
     [[ "$USER_PASSWORD" != "$USER_CONFIRM" ]] && say "Passwords do not match. Try again." || break
 done
@@ -98,7 +98,7 @@ cp "$USER_PASS_FILE" /mnt/root/.userpw
 
 say "Base setup complete!"
 
-ask_normal "Do you want to chroot and finalize installation now? (y/N): " CONFIRM
+ask_normal CONFIRM "Do you want to chroot and finalize installation now? (y/N): "
 
 if [[ "$CONFIRM" == [yY] ]]; then
     arch-chroot /mnt /root/chroot.sh

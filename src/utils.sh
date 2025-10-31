@@ -4,12 +4,12 @@ say () {
 
 ask_normal () {
     say "$2"
-    read "$1"
+    read $1
 }
 
 ask_secret () {
     say "$2"
-    read -s "$1"
+    read -s $1
 }
 
 die () {
