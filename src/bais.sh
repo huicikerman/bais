@@ -39,16 +39,21 @@ say "Partitioning '$DISK'..."
 if [[ "$SWAP_SIZE" -eq 0 ]]; then
     parted --script --align optimal "$DISK" \
         mklabel gpt \
-        mkpart EFI C12A7328-F81F-11D2-BA4B-00A0C93EC93B 0% ${EFI_SIZE}GiB \
-        mkpart ROOT 4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709 ${EFI_SIZE}GiB 100%
+        mkpart EFI fat32 0% ${EFI_SIZE}GiB \
+        mkpart ROOT ext4 ${EFI_SIZE}GiB 100% \
+        type 1 C12A7328-F81F-11D2-BA4B-00A0C93EC93B \
+        type 2 4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709
 else
     SWAP_END=$((EFI_SIZE + SWAP_SIZE + 1))
 
     parted --script --align optimal "$DISK" \
         mklabel gpt \
-        mkpart EFI C12A7328-F81F-11D2-BA4B-00A0C93EC93B 0% ${EFI_SIZE}GiB \
-        mkpart SWAP 0657FD6D-A4AB-43C4-84E5-0933C84B4F4F ${EFI_SIZE}GiB ${SWAP_END}GiB \
-        mkpart ROOT 4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709 ${SWAP_END}GiB 100%
+        mkpart EFI fat32 0% ${EFI_SIZE}GiB \
+        mkpart SWAP linux-swap ${EFI_SIZE}GiB ${SWAP_END}GiB \
+        mkpart ROOT ext4 ${SWAP_END}GiB 100% \
+        type 1 C12A7328-F81F-11D2-BA4B-00A0C93EC93B \
+        type 2 0657FD6D-A4AB-43C4-84E5-0933C84B4F4F \
+        type 3 4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709
 fi
 
 say "Formatting partitions..."
