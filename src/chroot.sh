@@ -60,17 +60,17 @@ for s in "${SYSTEMD_SERVICES[@]}"; do
     systemctl enable s
 done
 
-say "System configuration complete!"
+say_green "System configuration complete!"
 
 ask_normal CONFIRM "Would you like to reboot now? (y/N)"
 
 if [[ "$CONFIRM" != [yY] ]]; then
-    say "You can now exit chroot and reboot into your new system whenever you want."
+    say_green "You can now exit chroot and reboot into your new system whenever you want."
 else
-    say "Rebooting in..."
+    say_green "Rebooting in..."
 
     for i in $(seq 3 -1 1); do
-        say "$i..."
+        say_green "$i..."
         sleep 1
     done
 

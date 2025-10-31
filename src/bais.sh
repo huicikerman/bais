@@ -22,17 +22,17 @@ This can NOT be undone. Are you sure you want to continue? (y/N):"
 if [[ "$CONFIRM" != [yY] ]]; then
     die "Script aborted by the user."
 else
-    say "Clearing the disk in..."
+    say_green "Clearing the disk in..."
 
     for i in $(seq 5 -1 1); do
-        say "$i..."
+        say_green "$i..."
         sleep 1
     done
 
     sgdisk --zap-all "$DISK"
 fi
 
-say "Partitioning '$DISK'..."
+say_green "Partitioning '$DISK'..."
 
 # References for partition GUIDs and table layouts:
 #
@@ -59,23 +59,23 @@ else
         type 3 4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709
 fi
 
-say "Formatting partitions..."
+say_green "Formatting partitions..."
 mkfs.fat -F32 -n EFI "${DISK}1"
 mkswap -L SWAP "${DISK}2"
 mkfs.ext4 -L ROOT "${DISK}3"
 
-say "Mounting partitions..."
+say_green "Mounting partitions..."
 mount "${DISK}3" /mnt
 mount --mkdir "${DISK}1" /mnt/boot
 swapon "${DISK}2"
 
-say "Installing basic packages..."
+say_green "Installing basic packages..."
 pacstrap -K /mnt "${BASIC_PACKAGES[@]}"
 
-say "Generating fstab..."
+say_green "Generating fstab..."
 genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 
-say "Setting passwords for your system..."
+say_green "Setting passwords for your system..."
 
 ROOT_PASS_FILE=$(mktemp)
 USER_PASS_FILE=$(mktemp)
@@ -84,14 +84,14 @@ while true; do
     ask_secret ROOT_PASSWORD "Enter root password:"
     ask_secret ROOT_CONFIRM "Confirm root password:"
 
-    [[ "$ROOT_PASSWORD" != "$ROOT_CONFIRM" ]] && say "Passwords do not match. Try again." || break
+    [[ "$ROOT_PASSWORD" != "$ROOT_CONFIRM" ]] && say_red "Passwords do not match. Try again." || break
 done
 
 while true; do
     ask_secret USER_PASSWORD "Enter password for user '$USERNAME':"
     ask_secret USER_CONFIRM "Confirm password for user '$USERNAME':"
 
-    [[ "$USER_PASSWORD" != "$USER_CONFIRM" ]] && say "Passwords do not match. Try again." || break
+    [[ "$USER_PASSWORD" != "$USER_CONFIRM" ]] && say_red "Passwords do not match. Try again." || break
 done
 
 echo "$ROOT_PASSWORD" > "$ROOT_PASS_FILE"
@@ -106,12 +106,12 @@ cp "$(dirname "$0")/utils.sh" /mnt/bais/
 cp "$ROOT_PASS_FILE" /mnt/bais/.rootpw
 cp "$USER_PASS_FILE" /mnt/bais/.userpw
 
-say "Base setup complete!"
+say_green "Base setup complete!"
 
 ask_normal CONFIRM "Would you like to chroot and finalize installation now? (y/N):"
 
 if [[ "$CONFIRM" == [yY] ]]; then
     arch-chroot /mnt /bais/chroot.sh
 else
-    say "You can later chroot manually with: arch-chroot /mnt /bais/chroot.sh"
+    say_green "You can later chroot manually with: arch-chroot /mnt /bais/chroot.sh"
 fi
