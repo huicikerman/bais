@@ -97,6 +97,8 @@ done
 echo "$ROOT_PASSWORD" > "$ROOT_PASS_FILE"
 echo "$USER_PASSWORD" > "$USER_PASS_FILE"
 
+mkdir /mnt/bais
+
 cp "$(dirname "$0")/chroot.sh" /mnt/bais/
 cp "$(dirname "$0")/config.sh" /mnt/bais/
 cp "$(dirname "$0")/utils.sh" /mnt/bais/
