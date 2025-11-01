@@ -5,7 +5,9 @@ source "$(dirname "$0")/config.sh"
 
 set -euo pipefail
 
-trap cleanup EXIT
+trap '[[ $? -eq 0 ]] && cleanup' EXIT
+
+# TODO: Create checks for more variables.
 
 [[ ! -d /sys/firmware/efi ]] && die "Reboot your system in UEFI mode to continue."
 [[ -z "${DISK:-}" ]] && die "DISK variable not set!"
@@ -103,8 +105,8 @@ cp "$(dirname "$0")/chroot.sh" /mnt/bais/
 cp "$(dirname "$0")/config.sh" /mnt/bais/
 cp "$(dirname "$0")/utils.sh" /mnt/bais/
 
-cp "$ROOT_PASS_FILE" /mnt/bais/.rootpw
-cp "$USER_PASS_FILE" /mnt/bais/.userpw
+cp "$ROOT_PASS_FILE" /mnt/bais/.root-pw
+cp "$USER_PASS_FILE" /mnt/bais/.user-pw
 
 say_green "Base setup complete!"
 

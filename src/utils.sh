@@ -24,9 +24,21 @@ die () {
 cleanup () {
     say_green "Cleaning up before exiting..."
 
-    # Remove script's temp files.
-    rm -rf /mnt/bais/
-
     swapoff -a || true
-    umount -R /mnt || true
+
+    if mountpoint -q /mnt; then
+        umount -R /mnt || say_yellow "Some mount points could not be unmounted cleanly."
+    fi
+
+    if [[ -f /mnt/bais/.reboot-flag ]]; then
+        rm -rf /mnt/bais/ || true
+
+        say_green "Reboot flag detected, rebooting now..."
+        shutdown -r now
+    else
+        rm -rf /mnt/bais/ || true
+
+        say_green "Cleanup complete. You can reboot manually when ready."
+    fi
 }
+

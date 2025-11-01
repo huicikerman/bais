@@ -21,8 +21,8 @@ cat << HOSTS > /etc/hosts
 127.0.1.1 $HOSTNAME.localdomain $HOSTNAME
 HOSTS
 
-ROOT_PASSWORD=$(< /bais/.rootpw)
-USER_PASSWORD=$(< /bais/.userpw)
+ROOT_PASSWORD=$(< /bais/.root-pw)
+USER_PASSWORD=$(< /bais/.user-pw)
 
 echo "root:$ROOT_PASSWORD" | chpasswd
 
@@ -80,5 +80,6 @@ else
         sleep 1
     done
 
-    shutdown -r now
+    # Create a reboot flag which is then handled by the cleanup exit trap.
+    touch /bais/.reboot-flag
 fi
