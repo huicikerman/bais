@@ -31,13 +31,19 @@ SYSTEMD_USER_SERVICES=(
 )
 
 BASIC_PACKAGES=(
-    # Basics:
+    # System:
     base
     base-devel
     linux
     linux-firmware
     linux-firmware-intel
     intel-ucode
+
+    # Basics:
+    git
+    nano
+    openssh
+    sudo
 
     # Networking:
     iwd
@@ -56,14 +62,19 @@ BASIC_PACKAGES=(
     xorg-server
     xorg-apps
 
-    # Misc:
-    git
-    micro
-    openssh
-    reflector
-    sudo
+    # Fonts:
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    noto-fonts-extra
+
+    # Manuals:
     man-db
     man-pages
     man-pages-es
+
+    # Misc:
+    fastfetch
+    reflector
     xdg-user-dirs
 )
