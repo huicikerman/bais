@@ -7,10 +7,31 @@ set -euo pipefail
 
 trap cleanup EXIT
 
-# TODO: Create checks for more variables.
-
 [[ ! -d /sys/firmware/efi ]] && die "Reboot your system in UEFI mode to continue."
-[[ -z "${DISK:-}" ]] && die "DISK variable not set!"
+
+[[ -z "${DISK:-}" ]] && die "DISK variable is not set!"
+[[ ! -b "$DISK" ]] && die "Disk '$DISK' does not exist or is not a block device!"
+[[ "$DISK" =~ nvme ]] && echo "Note: Detected NVMe disk, partition naming differs (/dev/nvme0n1pX)."
+
+[[ -z "${EFI_SIZE:-}" ]] && die "EFI_SIZE variable is not set!"
+[[ -z "${SWAP_SIZE:-}" ]] && die "SWAP_SIZE variable is not set!"
+(( EFI_SIZE < 1 )) && die "EFI_SIZE must be at least 1 GiB!"
+(( SWAP_SIZE < 0 )) && die "SWAP_SIZE cannot be negative!"
+
+[[ -z "${USERNAME:-}" ]] && die "USERNAME variable is not set!"
+[[ -z "${HOSTNAME:-}" ]] && die "HOSTNAME variable is not set!"
+
+[[ -z "${KEYMAP:-}" ]] && die "KEYMAP variable is not set!"
+[[ -z "${LOCALE:-}" ]] && die "LOCALE variable is not set!"
+[[ -z "${TIMEZONE:-}" ]] && die "TIMEZONE variable is not set!"
+[[ ! -f "/usr/share/zoneinfo/$TIMEZONE" ]] && die "Invalid TIMEZONE: $TIMEZONE"
+
+[[ -z "${BOOTLOADER_NAME:-}" ]] && die "BOOTLOADER_NAME variable is not set!"
+[[ -z "${BOOTLOADER_TIMEOUT:-}" ]] && die "BOOTLOADER_TIMEOUT variable is not set!"
+(( BOOTLOADER_TIMEOUT < 0 )) && die "BOOTLOADER_TIMEOUT cannot be negative!"
+
+[[ ${#SYSTEMD_SYSTEM_SERVICES[@]} -eq 0 ]] && die "SYSTEMD_SYSTEM_SERVICES is empty!"
+[[ ${#SYSTEMD_USER_SERVICES[@]} -eq 0 ]] && die "SYSTEMD_USER_SERVICES is empty!"
 [[ ${#BASIC_PACKAGES[@]} -eq 0 ]] && die "BASIC_PACKAGES is empty!"
 
 mount | grep -q "$DISK" && die "'$DISK' is currently mounted! Unmount to continue."
