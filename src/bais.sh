@@ -5,7 +5,7 @@ source "$(dirname "$0")/config.sh"
 
 set -euo pipefail
 
-trap '[[ $? -eq 0 ]] && cleanup' EXIT
+trap cleanup EXIT
 
 # TODO: Create checks for more variables.
 
@@ -24,10 +24,10 @@ This can NOT be undone. Are you sure you want to continue? (y/N):"
 if [[ "$CONFIRM" != [yY] ]]; then
     die "Script aborted by the user."
 else
-    say_green "Clearing the disk in..."
+    say_yellow "Clearing the disk in..."
 
     for i in $(seq 5 -1 1); do
-        say_green "$i..."
+        say_yellow "$i..."
         sleep 1
     done
 
@@ -62,9 +62,9 @@ else
 fi
 
 say_green "Formatting partitions..."
-mkfs.fat -F32 -n EFI "${DISK}1"
+mkfs.ext4 -F -L ROOT "${DISK}3"
+mkfs.fat -F 32 -n EFI "${DISK}1"
 mkswap -L SWAP "${DISK}2"
-mkfs.ext4 -L ROOT "${DISK}3"
 
 say_green "Mounting partitions..."
 mount "${DISK}3" /mnt

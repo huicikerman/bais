@@ -73,13 +73,6 @@ ask_normal CONFIRM "Would you like to reboot now? (y/N)"
 if [[ "$CONFIRM" != [yY] ]]; then
     say_green "You can now exit chroot and reboot into your new system whenever you want."
 else
-    say_green "Rebooting in..."
-
-    for i in $(seq 3 -1 1); do
-        say_green "$i..."
-        sleep 1
-    done
-
     # Create a reboot flag which is then handled by the cleanup exit trap.
     touch /bais/.reboot-flag
 fi

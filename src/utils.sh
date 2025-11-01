@@ -1,10 +1,6 @@
-say_green () {
-    echo -e "\e[1;32m[BAIS] $1\e[0m"
-}
-
-say_red () {
-    echo -e "\e[1;31m[BAIS] $1\e[0m"
-}
+say_red () { echo -e "\e[1;31m[BAIS] $1\e[0m"; }
+say_green () { echo -e "\e[1;32m[BAIS] $1\e[0m"; }
+say_yellow () { echo -e "\e[1;33m[BAIS] $1\e[0m"; }
 
 ask_normal () {
     say_green "$2"
@@ -24,21 +20,26 @@ die () {
 cleanup () {
     say_green "Cleaning up before exiting..."
 
+    [[ -f /mnt/bais/.reboot-flag ]] && REBOOT=true || REBOOT=false
+
     swapoff -a || true
 
     if mountpoint -q /mnt; then
         umount -R /mnt || say_yellow "Some mount points could not be unmounted cleanly."
     fi
 
-    if [[ -f /mnt/bais/.reboot-flag ]]; then
-        rm -rf /mnt/bais/ || true
+    rm -rf /mnt/bais/ || true
 
-        say_green "Reboot flag detected, rebooting now..."
-        shutdown -r now
+    if [[ "$REBOOT" = true ]]; then
+        say_yellow "Reboot flag detected, rebooting in..."
+
+        for i in $(seq 3 -1 1); do
+            say_yellow "$i..."
+            sleep 1
+        done
+
+        reboot || systemctl reboot || shutdown -r now
     else
-        rm -rf /mnt/bais/ || true
-
         say_green "Cleanup complete. You can reboot manually when ready."
     fi
 }
-
