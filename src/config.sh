@@ -18,6 +18,7 @@ BOOTLOADER_TIMEOUT=10
 SYSTEMD_SYSTEM_SERVICES=(
     iwd.service
     sshd.service
+    dhcpcd.service
     systemd-timesyncd.service
     systemd-boot-update.service
     reflector.service
@@ -37,7 +38,10 @@ BASIC_PACKAGES=(
     linux-firmware
     linux-firmware-intel
     intel-ucode
+
+    # Networking:
     iwd
+    dhcpcd
 
     # Audio:
     pipewire
